@@ -30,7 +30,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Session } from "@ory/kratos-client";
 import md5 from "md5";
 import { forwardRef } from "react";
-import { json, Link, LoaderFunction, redirect, useLoaderData } from "remix";
+import { json, LoaderFunction, redirect, useLoaderData } from "remix";
+import { Link } from "~/components/Link";
 import { UIScreenButton } from "~/components/ui/UIScreenButton";
 import { kratosSdk } from "~/utils/ory.server";
 import { getUserFullName } from "~/utils/user.server";
@@ -193,8 +194,8 @@ function MenuItem({
             <FontAwesomeIcon icon={icon} />
           </Box>
           <LinkOverlay
-            as={forwardRef((props, ref) => (
-              <Link to={href} {...props} ref={ref as any} prefetch="intent" />
+            as={forwardRef<HTMLAnchorElement>((props, ref) => (
+              <Link href={href} {...props} ref={ref} /> // @todo Needs remix support since the routes contain redirect()s to external sites but on same domain
             ))}
           >
             {label}
