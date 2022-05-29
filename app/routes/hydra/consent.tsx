@@ -9,6 +9,7 @@ import {
   Stack,
   Text,
   UnorderedList,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { OAuth2Client } from "@ory/hydra-client";
 import { Session } from "@ory/kratos-client";
@@ -117,7 +118,7 @@ export const action: ActionFunction = async ({ request }) => {
     remember: Boolean(form.get("remember")),
 
     // When this "remember" sesion expires, in seconds. Set this to 0 so it will never expire.
-    remember_for: 3600,
+    remember_for: 0,
 
     // The session allows us to set session data for id and access tokens. Let's add the email if it is included.
     session: createHydraSession(body.requested_scope, body.context as Session),
@@ -200,7 +201,13 @@ export default function Consent() {
   const { challenge, client, user, requested_scope } =
     useLoaderData<ViewData>();
   return (
-    <Container>
+    <Container
+      maxW="container.lg"
+      bg={useColorModeValue("white", "gray.800")}
+      borderRadius="lg"
+      boxShadow="lg"
+      p={6}
+    >
       <Stack>
         <Heading>An application requests access to your data!</Heading>
         <Form reloadDocument method="post">

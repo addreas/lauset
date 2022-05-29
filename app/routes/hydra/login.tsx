@@ -103,7 +103,8 @@ async function redirectToLogin(
     "login",
     new URLSearchParams({
       return_to: return_to.toString(),
-      refresh: "true",
+      // Maybe only refresh sometimes depending on some setting?
+      // refresh: "true",
       ...loginParams,
     })
   );
