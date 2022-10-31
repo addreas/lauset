@@ -28,9 +28,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Session } from "@ory/kratos-client";
+import { useLoaderData } from "@remix-run/react";
+import { json, LoaderFunction, redirect } from "@remix-run/server-runtime";
 import md5 from "md5";
 import { forwardRef } from "react";
-import { json, LoaderFunction, redirect, useLoaderData } from "remix";
 import { Link } from "~/components/Link";
 import { UIScreenButton } from "~/components/ui/UIScreenButton";
 import { kratosSdk } from "~/utils/ory.server";
@@ -49,17 +50,22 @@ export const loader: LoaderFunction = async ({ request }) => {
   const { logout_url: logoutUrl } = await kratosSdk
     .createSelfServiceLogoutFlowUrlForBrowsers(cookie)
     .then((r) => r.data)
-    .catch(() => ({ logout_url: "" }));
+    .catch((e) => {
+      console.error("welcome, createSelfServiceLogoutFlowUrlForBrowsers", e);
+      return { logout_url: "https://google.com" };
+    });
 
   let userInfo: Session | null = null;
   if (cookie?.includes("session")) {
-    const { data } = await kratosSdk
-      .toSession(undefined, cookie)
-      .catch(() => ({ data: null }));
+    const { data } = await kratosSdk.toSession(undefined, cookie).catch((e) => {
+      console.error("welcome, kratosSdk.toSession", e);
+      return { data: null };
+    });
     userInfo = data;
   }
 
   if (!userInfo) {
+    console.error("missing userInfo, redirecting to", logoutUrl);
     throw redirect(logoutUrl);
   }
 

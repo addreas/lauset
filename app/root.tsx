@@ -1,7 +1,7 @@
 import { Box, ChakraProvider } from "@chakra-ui/react";
 import { withEmotionCache } from "@emotion/react";
 import { useContext, useEffect } from "react";
-import type { MetaFunction } from "remix";
+import type { MetaFunction } from "@remix-run/server-runtime";
 import {
   Links,
   LiveReload,
@@ -9,7 +9,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-} from "remix";
+} from "@remix-run/react";
 import { env } from "./config.client";
 import ClientStyleContext from "./context.client";
 import ServerStyleContext from "./context.server";

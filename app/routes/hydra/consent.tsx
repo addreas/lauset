@@ -13,13 +13,12 @@ import {
 } from "@chakra-ui/react";
 import { OAuth2Client } from "@ory/hydra-client";
 import { Session } from "@ory/kratos-client";
+import { Form, useLoaderData } from "@remix-run/react";
 import {
   ActionFunction,
-  Form,
   LoaderFunction,
   redirect,
-  useLoaderData,
-} from "remix";
+} from "@remix-run/server-runtime";
 import { Link } from "~/components/Link";
 import { hydraAdmin } from "~/utils/ory.server";
 

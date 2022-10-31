@@ -1,6 +1,7 @@
 import { Heading, Stack, Text } from "@chakra-ui/react";
 import { SelfServiceSettingsFlow } from "@ory/kratos-client";
-import { LoaderFunction, useLoaderData } from "remix";
+import { useLoaderData } from "@remix-run/react";
+import { LoaderFunction } from "@remix-run/server-runtime";
 import { Messages } from "~/components/Messages";
 import { UIForm } from "~/components/ui/UIForm";
 import { initSettingsFlow } from "~/utils/settings-flow.server";

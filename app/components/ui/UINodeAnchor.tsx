@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
 import { UiNode, UiNodeAnchorAttributes } from "@ory/kratos-client";
-import { Link } from "remix";
+import React from "react";
 import { Messages } from "../Messages";
 
 export function UINodeAnchor(
@@ -9,14 +9,14 @@ export function UINodeAnchor(
   const { attributes, messages } = props;
   return (
     <Button
-      as={(props) => (
+      as={React.forwardRef<HTMLButtonElement>((props) => (
         <>
-          <a to={attributes.href} {...props}>
+          <a href={attributes.href} {...props}>
             {attributes.title.text}
           </a>
           <Messages messages={messages} />
         </>
-      )}
+      ))}
     />
   );
 }

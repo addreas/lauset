@@ -1,5 +1,5 @@
+import { LoaderFunction, redirect } from "@remix-run/server-runtime";
 import crypto from "crypto";
-import { LoaderFunction, redirect } from "remix";
 import { commitSession, getSession } from "~/sessions";
 import {
   getUrlForKratosFlow,

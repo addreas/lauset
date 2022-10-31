@@ -1,4 +1,4 @@
-import { LoaderFunction, redirect } from "remix";
+import { LoaderFunction, redirect } from "@remix-run/server-runtime";
 import { commitSession, getSession } from "~/sessions";
 
 export const loader: LoaderFunction = async ({ request }) => {

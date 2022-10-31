@@ -1,6 +1,7 @@
 import { Center } from "@chakra-ui/react";
 import { SelfServiceRecoveryFlow } from "@ory/kratos-client";
-import { LoaderFunction, useLoaderData } from "remix";
+import { useLoaderData } from "@remix-run/react";
+import { LoaderFunction } from "@remix-run/server-runtime";
 import { BasicUI } from "~/components/BasicUI";
 import { Link } from "~/components/Link";
 import { getFlowOrRedirectToInit } from "~/utils/flow";

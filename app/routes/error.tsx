@@ -1,6 +1,7 @@
 import { Code } from "@chakra-ui/react";
 import { SelfServiceError } from "@ory/kratos-client";
-import { json, LoaderFunction, redirect, useLoaderData } from "remix";
+import { useLoaderData } from "@remix-run/react";
+import { json, LoaderFunction, redirect } from "@remix-run/server-runtime";
 import { kratosSdk } from "~/utils/ory.server";
 
 type LoaderData = SelfServiceError;

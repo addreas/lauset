@@ -1,7 +1,7 @@
 import { CacheProvider } from "@emotion/react";
 import { useState } from "react";
 import { hydrate } from "react-dom";
-import { RemixBrowser } from "remix";
+import { RemixBrowser } from "@remix-run/react";
 import ClientStyleContext from "./context.client";
 import createEmotionCache from "./createEmotionCache";
 

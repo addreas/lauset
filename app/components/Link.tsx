@@ -1,6 +1,6 @@
 import { ComponentProps, forwardRef } from "react";
 import { Link as ChakraLink } from "@chakra-ui/react";
-import { Link as RemixLink } from "remix";
+import { Link as RemixLink } from "@remix-run/react";
 
 export const Link = forwardRef<
   HTMLAnchorElement,
