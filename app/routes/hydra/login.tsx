@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { commitSession, getSession } from "~/sessions";
 import {
   getUrlForKratosFlow,
-  hydraAdmin,
+  hydraOauthApi,
   kratosBrowserUrl,
   kratosSdk,
 } from "~/utils/ory.server";
@@ -18,7 +18,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     );
   }
 
-  const { data } = await hydraAdmin.getLoginRequest(hydraChallenge);
+  const { data } = await hydraOauthApi.getOAuth2LoginRequest(hydraChallenge);
   if (data.skip) {
     // You can apply logic here, for example update the number of times the user logged in...
     // Now it's time to grant the login kratosRequest. You could also deny the kratosRequest if something went terribly wrong
@@ -26,7 +26,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     console.debug("Accepting ORY Hydra Login Request because skip is true");
     const {
       data: { redirect_to },
-    } = await hydraAdmin.acceptLoginRequest(hydraChallenge, {
+    } = await hydraOauthApi.acceptOAuth2LoginRequest(hydraChallenge, {
       subject: data.subject,
     });
 
@@ -60,7 +60,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     // User is authenticated, accept the LoginRequest and tell Hydra
     const {
       data: { redirect_to },
-    } = await hydraAdmin.acceptLoginRequest(hydraChallenge, {
+    } = await hydraOauthApi.acceptOAuth2LoginRequest(hydraChallenge, {
       // We need to get the email of the user. We don't want to do that via traits as
       // they are dynamic. They would be part of the PublicAPI. That's not true
       // for identity.addresses So let's get it via the AdmninAPI

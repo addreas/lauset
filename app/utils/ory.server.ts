@@ -1,5 +1,9 @@
 import {
-  AdminApi,
+  OAuth2Api,
+  JwkApi,
+  OidcApi,
+  MetadataApi,
+  WellknownApi,
   Configuration as HydraConfiguration,
 } from "@ory/hydra-client";
 import {
@@ -18,11 +22,10 @@ export const kratosSdk = new V0alpha2Api(
 );
 
 export const hydraAdminUrl = env.HYDRA_ADMIN_URL;
-export const hydraAdmin = new AdminApi(
-  new HydraConfiguration({
-    basePath: hydraAdminUrl,
-  })
-);
+const hydraConf = new HydraConfiguration({
+  basePath: hydraAdminUrl,
+});
+export const hydraOauthApi = new OAuth2Api(hydraConf);
 
 // https://github.com/ory/kratos-selfservice-ui-node/blob/29b716c0b866dd70c9f6d7db5aa79b33b0242947/src/pkg/index.ts
 export function getUrlForKratosFlow(

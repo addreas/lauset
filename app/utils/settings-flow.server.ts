@@ -1,5 +1,5 @@
 import { SelfServiceSettingsFlow } from "@ory/client";
-import { json } from "remix";
+import { json } from "@remix-run/server-runtime";
 import { commitSession, getSession } from "~/sessions";
 import { getFlowOrRedirectToInit } from "./flow";
 import { kratosSdk } from "./ory.server";
