@@ -1,5 +1,5 @@
 import { Box, Heading, Stack, Text } from "@chakra-ui/react";
-import { SelfServiceSettingsFlow } from "@ory/kratos-client";
+import { SelfServiceSettingsFlow } from "@ory/client";
 import { useLoaderData } from "@remix-run/react";
 import { LoaderFunction } from "@remix-run/server-runtime";
 import { Messages } from "~/components/Messages";
@@ -21,12 +21,12 @@ export default function ProfileSettings() {
         Manage 2FA
       </Heading>
       <Messages messages={data.ui.messages} />
-      <UIForm ui={data.ui} only={["totp"]} showEmpty />
+      <UIForm ui={data.ui} groups={["totp"]} showEmpty />
 
       <Box h={6} />
       <UIForm
         ui={data.ui}
-        only={["lookup_secret"]}
+        groups={["lookup_secret"]}
         before={
           <>
             <Heading as="h3" fontSize="xl">

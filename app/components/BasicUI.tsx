@@ -1,5 +1,5 @@
 import { Container, Divider, Heading, Stack } from "@chakra-ui/react";
-import { UiContainer } from "@ory/kratos-client";
+import { UiContainer } from "@ory/client";
 import { Messages } from "./Messages";
 import { UIForm } from "./ui/UIForm";
 

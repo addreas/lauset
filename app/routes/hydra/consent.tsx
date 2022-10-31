@@ -12,7 +12,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { OAuth2Client } from "@ory/hydra-client";
-import { Session } from "@ory/kratos-client";
+import { Session } from "@ory/client";
 import { Form, useLoaderData } from "@remix-run/react";
 import {
   ActionFunction,

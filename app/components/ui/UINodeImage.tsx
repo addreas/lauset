@@ -1,6 +1,6 @@
 import { Center, Image } from "@chakra-ui/react";
 import { getNodeLabel } from "@ory/integrations/ui";
-import { UiNode, UiNodeImageAttributes } from "@ory/kratos-client";
+import { UiNode, UiNodeImageAttributes } from "@ory/client";
 
 export function UINodeImage(
   props: { attributes: UiNodeImageAttributes } & UiNode

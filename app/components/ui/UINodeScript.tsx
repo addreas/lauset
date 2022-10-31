@@ -1,4 +1,4 @@
-import { UiNode, UiNodeScriptAttributes } from "@ory/kratos-client";
+import { UiNode, UiNodeScriptAttributes } from "@ory/client";
 import { HTMLAttributeReferrerPolicy } from "react";
 
 export function UINodeScript({

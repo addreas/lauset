@@ -27,7 +27,7 @@ import {
   IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Session } from "@ory/kratos-client";
+import { Session } from "@ory/client";
 import { useLoaderData } from "@remix-run/react";
 import { json, LoaderFunction, redirect } from "@remix-run/server-runtime";
 import md5 from "md5";

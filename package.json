@@ -24,7 +24,6 @@
     "@ory/client": "^0.2.0-alpha.60",
     "@ory/hydra-client": "^2.0.1",
     "@ory/integrations": "^0.2.8",
-    "@ory/kratos-client": "^0.0.0-next.a36dda23f209",
     "@remix-run/dev": "^1.7.4",
     "@remix-run/react": "^1.7.4",
     "@remix-run/serve": "^1.7.4",

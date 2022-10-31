@@ -1,5 +1,5 @@
 import { Center } from "@chakra-ui/react";
-import { SelfServiceRecoveryFlow } from "@ory/kratos-client";
+import { SelfServiceRecoveryFlow } from "@ory/client";
 import { useLoaderData } from "@remix-run/react";
 import { LoaderFunction } from "@remix-run/server-runtime";
 import { BasicUI } from "~/components/BasicUI";

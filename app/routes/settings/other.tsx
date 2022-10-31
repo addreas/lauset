@@ -1,5 +1,5 @@
 import { Heading, Stack, Text } from "@chakra-ui/react";
-import { SelfServiceSettingsFlow } from "@ory/kratos-client";
+import { SelfServiceSettingsFlow } from "@ory/client";
 import { useLoaderData } from "@remix-run/react";
 import { LoaderFunction } from "@remix-run/server-runtime";
 import { Messages } from "~/components/Messages";
@@ -21,7 +21,7 @@ export default function OtherSettings() {
 
       <UIForm
         ui={data.ui}
-        only={["oidc"]}
+        groups={["oidc"]}
         before={
           <Heading as="h3" fontSize="xl">
             Manage Social Sign In
@@ -31,7 +31,7 @@ export default function OtherSettings() {
 
       <UIForm
         ui={data.ui}
-        only={["webauthn"]}
+        groups={["webauthn"]}
         before={
           <>
             <Heading as="h3" fontSize="xl">

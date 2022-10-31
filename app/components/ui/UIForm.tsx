@@ -7,7 +7,7 @@ import {
   isUiNodeScriptAttributes,
   isUiNodeTextAttributes,
 } from "@ory/integrations/ui";
-import { UiContainer, UiNode, UiNodeInputAttributes } from "@ory/kratos-client";
+import { UiContainer, UiNode, UiNodeInputAttributes } from "@ory/client";
 import { groupBy } from "lodash";
 import { UINodeAnchor } from "./UINodeAnchor";
 import { UINodeImage } from "./UINodeImage";
@@ -21,18 +21,23 @@ import { UINodeText } from "./UINodeText";
 
 export function UIForm({
   ui,
-  only,
+  groups,
   before,
   after,
   showEmpty,
 }: {
   ui: UiContainer;
-  only?: string[];
+  groups?: string[];
   before?: JSX.Element;
   after?: JSX.Element;
   showEmpty?: boolean;
 }) {
-  const exists = filterNodesByGroups(ui.nodes, only, true).length > 0;
+  const exists =
+    filterNodesByGroups({
+      nodes: ui.nodes,
+      groups,
+      withoutDefaultGroup: true,
+    }).length > 0;
   if (!exists && !showEmpty) {
     return null;
   }
@@ -41,7 +46,14 @@ export function UIForm({
     <Stack>
       {before}
       {Object.values(
-        groupBy(filterNodesByGroups(ui.nodes, only, true), (n) => n.group)
+        groupBy(
+          filterNodesByGroups({
+            nodes: ui.nodes,
+            groups,
+            withoutDefaultGroup: true,
+          }),
+          (n) => n.group
+        )
       ).map((nodes, i) => (
         <form key={i} action={ui.action} method={ui.method}>
           <Stack>

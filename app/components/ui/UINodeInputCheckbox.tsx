@@ -1,6 +1,6 @@
 import { Checkbox, FormControl, FormHelperText } from "@chakra-ui/react";
 import { getNodeLabel } from "@ory/integrations/ui";
-import { UiNode, UiNodeInputAttributes } from "@ory/kratos-client";
+import { UiNode, UiNodeInputAttributes } from "@ory/client";
 import { Messages } from "../Messages";
 
 export function UINodeInputCheckbox(

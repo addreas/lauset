@@ -8,7 +8,7 @@ import {
   WrapItem,
 } from "@chakra-ui/react";
 import { getNodeLabel } from "@ory/integrations/ui";
-import { UiNode, UiNodeTextAttributes } from "@ory/kratos-client";
+import { UiNode, UiNodeTextAttributes } from "@ory/client";
 import { range } from "lodash";
 
 export function UINodeText(

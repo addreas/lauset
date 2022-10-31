@@ -8,7 +8,7 @@ import {
   PinInputField,
 } from "@chakra-ui/react";
 import { getNodeLabel } from "@ory/integrations/ui";
-import { UiNode, UiNodeInputAttributes } from "@ory/kratos-client";
+import { UiNode, UiNodeInputAttributes } from "@ory/client";
 import { range } from "lodash";
 import { useEffect, useState } from "react";
 import { Messages } from "../Messages";

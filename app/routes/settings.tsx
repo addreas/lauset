@@ -7,7 +7,7 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { Session } from "@ory/kratos-client";
+import { Session } from "@ory/client";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import { json, LoaderFunction } from "@remix-run/server-runtime";
 import md5 from "md5";

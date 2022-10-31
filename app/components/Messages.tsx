@@ -1,5 +1,5 @@
 import { Alert, AlertIcon, Stack } from "@chakra-ui/react";
-import { UiText } from "@ory/kratos-client";
+import { UiText } from "@ory/client";
 import { ComponentProps } from "react";
 
 export function Messages({
