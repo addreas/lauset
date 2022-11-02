@@ -122,7 +122,7 @@ export default function Login() {
               Sign up
             </Link>
             <Spacer />
-            <Link fontSize="sm" color="#fff" to="/recovery">
+            <Link fontSize="sm" color="#fff" href="/recovery">
               Recover lost credentials
             </Link>
           </HStack>
