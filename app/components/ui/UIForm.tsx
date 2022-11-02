@@ -32,12 +32,13 @@ export function UIForm({
   after?: JSX.Element;
   showEmpty?: boolean;
 }) {
-  const exists =
-    filterNodesByGroups({
-      nodes: ui.nodes,
-      groups,
-      withoutDefaultGroup: true,
-    }).length > 0;
+  const filteredNodes = filterNodesByGroups({
+    nodes: ui.nodes,
+    groups,
+    withoutDefaultGroup: true,
+  });
+
+  const exists = filteredNodes.length > 0;
   if (!exists && !showEmpty) {
     return null;
   }
@@ -45,16 +46,7 @@ export function UIForm({
   return (
     <Stack>
       {before}
-      {Object.values(
-        groupBy(
-          filterNodesByGroups({
-            nodes: ui.nodes,
-            groups,
-            withoutDefaultGroup: true,
-          }),
-          (n) => n.group
-        )
-      ).map((nodes, i) => (
+      {Object.values(groupBy(filteredNodes, (n) => n.group)).map((nodes, i) => (
         <form key={i} action={ui.action} method={ui.method}>
           <Stack>
             {ui.nodes

@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   kratos-migrate:
-    image: oryd/kratos:v0.8.2
+    image: oryd/kratos:v0.10.1
     environment:
       - DSN=sqlite:///var/lib/sqlite/db.sqlite?_fk=true&mode=rwc
     volumes:
@@ -18,7 +18,7 @@ services:
   kratos:
     depends_on:
       - kratos-migrate
-    image: oryd/kratos:v0.8.2
+    image: oryd/kratos:v0.10.1
     # build:
     #   context: ./kratos
     #   dockerfile: ./.docker/Dockerfile-build
@@ -41,7 +41,7 @@ services:
         target: /etc/config/kratos
 
   hydra-migrate:
-    image: oryd/hydra:v1.10.7-sqlite
+    image: oryd/hydra:v2.0.1
     # build:
     #   context: ./hydra
     #   dockerfile: ./.docker/Dockerfile-build
@@ -61,13 +61,14 @@ services:
   hydra:
     depends_on:
       - hydra-migrate
-    image: oryd/hydra:v1.10.7-sqlite
+    image: oryd/hydra:v2.0.1
     # build:
     #   context: ./hydra
     #   dockerfile: ./.docker/Dockerfile-build
     environment:
       - DSN=sqlite:///var/lib/sqlite/db.sqlite?_fk=true&mode=rwc
       - HYDRA_URL=http://localhost:4445/
+      - ORY_SDK_URL=http://localhost:4445/
       # - LOG_LEVEL=debug
     ports:
       - "4444:4444" # public
@@ -80,7 +81,7 @@ services:
       - type: bind
         source: ./config
         target: /etc/config/hydra
-    command: -c /etc/config/hydra/hydra.yml serve all --dangerous-force-http
+    command: -c /etc/config/hydra/hydra.yml serve all --dev
     restart: on-failure
 
   mailslurper:
@@ -91,13 +92,12 @@ services:
 
   #  alias hydra="docker-compose exec hydra hydra"
 
-  #  hydra clients create \
-  #    --id secure-app \
-  #    --secret secure-app \
-  #    --grant-types authorization_code \
+  # hydra create client \
+  #    --name secure-app \
+  #    --grant-type authorization_code \
   #    --scope openid,email,profile \
   #    --token-endpoint-auth-method client_secret_post \
-  #    --callbacks http://localhost:4180/oauth2/callback
+  #    --redirect-uri http://localhost:4180/oauth2/callback
 
   secure-app:
     image: quay.io/oauth2-proxy/oauth2-proxy:latest
@@ -117,8 +117,8 @@ services:
     command: |
       --http-address=0.0.0.0:4180
       --upstream=file:///www/static#/
-      --client-id=secure-app
-      --client-secret=secure-app
+      --client-id=0980f1aa-a23e-443c-b121-77a583a19f7d
+      --client-secret=uRckz8W91L0pLtbvddYN8ogCyr
       --cookie-secret=VOT5eQoY4rdUcXFqnyKk_fcBfTbSFZ0Z_WsVbNa4oyw=
       --email-domain=*
       --redirect-url=http://localhost:4180/oauth2/callback

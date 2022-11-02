@@ -19,10 +19,6 @@ export function UINodeInputPassword(
   const { attributes, messages } = props;
   const [currentlyVisible, setVisible] = useState(false);
 
-  if (attributes.onclick) {
-    console.log("what is attributes.onclick?", attributes.onclick);
-  }
-
   return (
     <FormControl
       isRequired={attributes.required}
@@ -38,6 +34,12 @@ export function UINodeInputPassword(
           value={attributes.value}
           type={currentlyVisible ? "text" : "password"}
           placeholder={getNodeLabel(props)}
+          onClick={() =>
+            attributes.onclick
+              ? confirm(`evaluate this script? \n\n${attributes.onclick}`) &&
+                eval(attributes.onclick)
+              : null
+          }
         />
         <InputRightElement width="4.5rem">
           <Button onClick={() => setVisible(!currentlyVisible)}>

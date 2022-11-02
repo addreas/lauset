@@ -23,6 +23,12 @@ export function UINodeInputButton(
           value={attributes.value}
           disabled={attributes.disabled}
           colorScheme="green"
+          onClick={() =>
+            attributes.onclick
+              ? confirm(`evaluate this script? \n\n${attributes.onclick}`) &&
+                eval(attributes.onclick)
+              : null
+          }
         >
           {getNodeLabel(props)}
         </Button>

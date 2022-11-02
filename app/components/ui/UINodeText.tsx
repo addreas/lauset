@@ -29,7 +29,6 @@ const LOOKUP_SECRET_USED_ID = 1050014;
 function Content({
   attributes,
 }: { attributes: UiNodeTextAttributes } & UiNode) {
-  console.log("UINodeText attributes", { attributes });
   switch (attributes.text.id) {
     case LOOKUP_SECRET_TEXT_ID:
       return <LookupSecret {...(attributes.text.context as any)} />;

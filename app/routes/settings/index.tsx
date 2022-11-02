@@ -15,5 +15,5 @@ export const loader: LoaderFunction = async ({ request }) => {
     });
   }
 
-  return redirect("/welcome");
+  return redirect("/");
 };

@@ -8,10 +8,12 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { Session } from "@ory/client";
-import { Link, Outlet, useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import { json, LoaderFunction } from "@remix-run/server-runtime";
 import md5 from "md5";
+import { Link } from "~/components/Link";
 import { kratosSdk } from "~/utils/ory.server";
+import { getUserFullName } from "~/utils/user.server";
 
 type LoaderData = { gravatarHash: string | null; userFullName: string };
 
@@ -26,18 +28,12 @@ export const loader: LoaderFunction = async ({ request }) => {
     userInfo = data;
   }
 
-  // if (!userInfo) {
-  //   throw redirect("/welcome");
-  // }
-
   const userId = userInfo?.identity.verifiable_addresses?.[0]?.value ?? null;
   const gravatarHash = userId ? md5(userId.toLowerCase()) : null;
 
-  // console.log({ gravatarHash });
-
   return json<LoaderData>({
     gravatarHash,
-    userFullName: "Jonas Dahl", // await getUserFullName(userInfo),
+    userFullName: userInfo ? await getUserFullName(userInfo) : "Jane Doe",
   });
 };
 
@@ -57,7 +53,7 @@ export default function Settings() {
           />
 
           <Heading as="h1" color="white" textAlign="center" maxW="30rem">
-            <Link to="/welcome">{userFullName}</Link>
+            <Link to="/">{userFullName}</Link>
           </Heading>
         </HStack>
 
@@ -70,10 +66,8 @@ export default function Settings() {
           <Outlet />
         </Container>
 
-        <Link to="/welcome">
-          <Text as="span" color="#fff">
-            Go back
-          </Text>
+        <Link to="/" fontSize="sm" color="#fff">
+          Go back
         </Link>
       </Stack>
     </Container>

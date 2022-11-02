@@ -23,7 +23,7 @@ import {
 } from "~/utils/ory.server";
 
 type LoaderData = SelfServiceLoginFlow & {
-  isAuthenticated: boolean;
+  partiallyAuthenticated: boolean;
   registerUrl: string;
   logoutUrl: string;
 };
@@ -45,7 +45,8 @@ export const loader: LoaderFunction = async ({ request }) => {
     new URLSearchParams({ return_to })
   );
 
-  const isAuthenticated = login.refresh || login.requested_aal === "aal2";
+  const partiallyAuthenticated =
+    login.refresh || login.requested_aal === "aal2";
 
   const logoutUrl =
     (await kratosSdk
@@ -56,7 +57,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json<LoaderData>(
     {
       ...login,
-      isAuthenticated,
+      partiallyAuthenticated,
       registerUrl,
       logoutUrl,
     }
@@ -68,44 +69,60 @@ export default function Login() {
   const data = useLoaderData<LoaderData>();
 
   return (
-    <Container
-      py={7}
-      p={6}
-      maxW="20rem"
-      bg={useColorModeValue("white", "gray.800")}
-      borderRadius="lg"
-      boxShadow="lg"
-    >
-      <Stack>
-        <Heading as="h1">
-          {data.refresh
-            ? "Confirm Action"
-            : data.requested_aal === "aal2"
-            ? "Two-Factor Authentication"
-            : "Sign In"}
-        </Heading>
+    <Container>
+      <Stack spacing={5}>
+        <Container
+          py={7}
+          p={6}
+          bg={useColorModeValue("white", "gray.800")}
+          borderRadius="lg"
+          boxShadow="lg"
+        >
+          <Stack>
+            <Heading as="h1">
+              {data.refresh
+                ? "Confirm Action"
+                : data.requested_aal === "aal2"
+                ? "Two-Factor Authentication"
+                : "Sign In"}
+            </Heading>
 
-        <Messages messages={data.ui.messages} alertProps={{ fontSize: "xs" }} />
+            <Messages
+              messages={data.ui.messages}
+              alertProps={{ fontSize: "xs" }}
+            />
 
-        <Box pb={3}>
-          <UIForm ui={data.ui} />
-        </Box>
+            <Box pb={3}>
+              <UIForm
+                ui={data.ui}
+                groups={[
+                  "password",
+                  "oidc",
+                  "code",
+                  "totp",
+                  "lookup_secret",
+                  "webauthn",
+                ]}
+              />
+            </Box>
 
-        <Divider />
+            <Divider />
+          </Stack>
+        </Container>
 
-        {data.isAuthenticated ? (
+        {data.partiallyAuthenticated ? (
           <Center>
-            <Link fontSize="sm" opacity={0.8} href={data.logoutUrl}>
+            <Link fontSize="sm" color="#fff" href={data.logoutUrl}>
               Log out
             </Link>
           </Center>
         ) : (
           <HStack>
-            <Link fontSize="sm" opacity={0.8} href={data.registerUrl}>
+            <Link fontSize="sm" color="#fff" href={data.registerUrl}>
               Sign up
             </Link>
             <Spacer />
-            <Link fontSize="sm" opacity={0.8} to="/recovery">
+            <Link fontSize="sm" color="#fff" to="/recovery">
               Recover lost credentials
             </Link>
           </HStack>
