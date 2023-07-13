@@ -1,16 +1,16 @@
 import { Text } from "@chakra-ui/react";
-import { SelfServiceRecoveryFlow } from "@ory/client";
+import { RecoveryFlow } from "@ory/client";
 import { useLoaderData } from "@remix-run/react";
 import { LoaderArgs, json } from "@remix-run/server-runtime";
 import { BasicUI } from "~/components/BasicUI";
 import { Link } from "~/components/Link";
 import { getFlowOrRedirectToInit } from "~/utils/flow";
-import { kratosSdk } from "~/utils/ory.server";
+import { kratosFrontendApi } from "~/utils/ory.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   return json(
-    await getFlowOrRedirectToInit(request, "recovery", (flow, cookie) =>
-      kratosSdk.getSelfServiceRecoveryFlow(flow, cookie)
+    await getFlowOrRedirectToInit(request, "recovery", (id, cookie) =>
+      kratosFrontendApi.getRecoveryFlow({id,  cookie})
     )
   );
 };

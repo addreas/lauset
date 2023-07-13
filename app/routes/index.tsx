@@ -34,7 +34,7 @@ import md5 from "md5";
 import { forwardRef } from "react";
 import { Link } from "~/components/Link";
 import { UIScreenButton } from "~/components/ui/UIScreenButton";
-import { kratosSdk } from "~/utils/ory.server";
+import { kratosFrontendApi } from "~/utils/ory.server";
 import { getUserFullName } from "~/utils/user.server";
 
 type LoaderData = {
@@ -47,8 +47,8 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const cookie = request.headers.get("cookie") ?? undefined;
-  const { logout_url: logoutUrl } = await kratosSdk
-    .createSelfServiceLogoutFlowUrlForBrowsers(cookie)
+  const { logout_url: logoutUrl } = await kratosFrontendApi
+    .createBrowserLogoutFlow({cookie})
     .then((r) => r.data)
     .catch((e) => {
       return { logout_url: "/login" };
@@ -56,7 +56,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   let userInfo: Session | null = null;
   if (cookie?.includes("session")) {
-    const { data } = await kratosSdk.toSession(undefined, cookie).catch((e) => {
+    const { data } = await kratosFrontendApi.toSession({cookie}).catch((e) => {
       return { data: null };
     });
     userInfo = data;

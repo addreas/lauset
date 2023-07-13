@@ -1,17 +1,17 @@
 import { Code } from "@chakra-ui/react";
-import { SelfServiceError } from "@ory/client";
+import { FlowError } from "@ory/client";
 import { useLoaderData } from "@remix-run/react";
 import { json, LoaderFunction, redirect } from "@remix-run/server-runtime";
-import { kratosSdk } from "~/utils/ory.server";
+import { kratosFrontendApi } from "~/utils/ory.server";
 
-type LoaderData = SelfServiceError;
+type LoaderData = FlowError;
 
 export const loader: LoaderFunction = async ({ request }) => {
   const id = new URL(request.url).searchParams.get("id");
   if (!id) {
     return redirect("/");
   }
-  const error = await kratosSdk.getSelfServiceError(id);
+  const error = await kratosFrontendApi.getFlowError({id});
   return json<LoaderData>(error.data, {
     status: error.status,
     statusText: error.statusText,

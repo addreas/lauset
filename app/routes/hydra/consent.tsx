@@ -11,7 +11,7 @@ import {
   UnorderedList,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { OAuth2Client } from "@ory/hydra-client";
+import { OAuth2Client } from "@ory/client";
 import { Session } from "@ory/client";
 import { Form, useLoaderData } from "@remix-run/react";
 import {
@@ -33,13 +33,15 @@ export const loader: LoaderFunction = async ({ request }) => {
   const params = new URL(request.url).searchParams;
   // Parses the URL query
   // The challenge is used to fetch information about the consent request from ORY Hydra.
-  const challenge = params.get("consent_challenge");
+  const consentChallenge = params.get("consent_challenge");
 
-  if (!challenge) {
+  if (!consentChallenge) {
     throw new Error("Expected consent_challenge to be set.");
   }
 
-  const { data: body } = await hydraOauthApi.getOAuth2ConsentRequest(challenge);
+  const { data: body } = await hydraOauthApi.getOAuth2ConsentRequest({
+    consentChallenge,
+  });
 
   const context = body.context as Session;
 
@@ -49,23 +51,26 @@ export const loader: LoaderFunction = async ({ request }) => {
     // All we need to do now is to redirect the user back to hydra!
     const {
       data: { redirect_to },
-    } = await hydraOauthApi.acceptOAuth2ConsentRequest(challenge, {
-      // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
-      // are requested accidentally.
-      grant_scope: body.requested_scope,
+    } = await hydraOauthApi.acceptOAuth2ConsentRequest({
+      consentChallenge,
+      acceptOAuth2ConsentRequest: {
+        // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
+        // are requested accidentally.
+        grant_scope: body.requested_scope,
 
-      // ORY Hydra checks if requested audiences are allowed by the client, so we can simply echo this.
-      grant_access_token_audience: body.requested_access_token_audience,
+        // ORY Hydra checks if requested audiences are allowed by the client, so we can simply echo this.
+        grant_access_token_audience: body.requested_access_token_audience,
 
-      // The session allows us to set session data for id and access tokens. Let's add the email if it is included.
-      session: createHydraSession(body.requested_scope, context),
+        // The session allows us to set session data for id and access tokens. Let's add the email if it is included.
+        session: createHydraSession(body.requested_scope, context),
+      },
     });
     return redirect(redirect_to);
   }
 
   // If consent can't be skipped we MUST show the consent UI.
   return {
-    challenge: challenge,
+    challenge: consentChallenge,
     // We have a bunch of data available from the response, check out the API docs to find what these values mean
     // and what additional data you have available.
     requested_scope: body.requested_scope,
@@ -76,9 +81,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
-  const challenge = form.get("challenge")?.toString();
+  const consentChallenge = form.get("challenge")?.toString();
 
-  if (!challenge) {
+  if (!consentChallenge) {
     throw new Error("missing challenge in consent action");
   }
 
@@ -87,9 +92,12 @@ export const action: ActionFunction = async ({ request }) => {
     // Looks like the consent request was denied by the user
     const {
       data: { redirect_to },
-    } = await hydraOauthApi.rejectOAuth2ConsentRequest(challenge, {
-      error: "access_denied",
-      error_description: "The resource owner denied the request",
+    } = await hydraOauthApi.rejectOAuth2ConsentRequest({
+      consentChallenge,
+      rejectOAuth2Request: {
+        error: "access_denied",
+        error_description: "The resource owner denied the request",
+      },
     });
     return redirect(redirect_to);
   }
@@ -100,27 +108,35 @@ export const action: ActionFunction = async ({ request }) => {
   }
 
   // Seems like the user authenticated! Let's tell hydra...
-  const { data: body } = await hydraOauthApi.getOAuth2ConsentRequest(challenge);
+  const { data: body } = await hydraOauthApi.getOAuth2ConsentRequest({
+    consentChallenge,
+  });
 
   const {
     data: { redirect_to },
-  } = await hydraOauthApi.acceptOAuth2ConsentRequest(challenge, {
-    // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
-    // are requested accidentally.
-    grant_scope: grantScope,
+  } = await hydraOauthApi.acceptOAuth2ConsentRequest({
+    consentChallenge,
+    acceptOAuth2ConsentRequest: {
+      // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
+      // are requested accidentally.
+      grant_scope: grantScope,
 
-    // ORY Hydra checks if requested audiences are allowed by the client, so we can simply echo this.
-    grant_access_token_audience: body.requested_access_token_audience,
+      // ORY Hydra checks if requested audiences are allowed by the client, so we can simply echo this.
+      grant_access_token_audience: body.requested_access_token_audience,
 
-    // This tells hydra to remember this consent request and allow the same client to request the same
-    // scopes from the same user, without showing the UI, in the future.
-    remember: Boolean(form.get("remember")),
+      // This tells hydra to remember this consent request and allow the same client to request the same
+      // scopes from the same user, without showing the UI, in the future.
+      remember: Boolean(form.get("remember")),
 
-    // When this "remember" sesion expires, in seconds. Set this to 0 so it will never expire.
-    remember_for: 0,
+      // When this "remember" sesion expires, in seconds. Set this to 0 so it will never expire.
+      remember_for: 0,
 
-    // The session allows us to set session data for id and access tokens. Let's add the email if it is included.
-    session: createHydraSession(body.requested_scope, body.context as Session),
+      // The session allows us to set session data for id and access tokens. Let's add the email if it is included.
+      session: createHydraSession(
+        body.requested_scope,
+        body.context as Session
+      ),
+    },
   });
 
   // All we need to do now is to redirect the user back to hydra!

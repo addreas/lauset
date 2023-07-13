@@ -5,20 +5,22 @@ import {
   getUrlForKratosFlow,
   hydraOauthApi,
   kratosBrowserUrl,
-  kratosSdk,
+  kratosFrontendApi,
 } from "~/utils/ory.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const params = new URL(request.url).searchParams;
-  const hydraChallenge = params.get("login_challenge");
+  const loginChallenge = params.get("login_challenge");
 
-  if (!hydraChallenge) {
+  if (!loginChallenge) {
     throw new Error(
       "Missing Hydra challenge. (query parameter login_challenge)"
     );
   }
 
-  const { data } = await hydraOauthApi.getOAuth2LoginRequest(hydraChallenge);
+  const { data } = await hydraOauthApi.getOAuth2LoginRequest({
+    loginChallenge,
+  });
   if (data.skip) {
     // You can apply logic here, for example update the number of times the user logged in...
     // Now it's time to grant the login kratosRequest. You could also deny the kratosRequest if something went terribly wrong
@@ -26,8 +28,11 @@ export const loader: LoaderFunction = async ({ request }) => {
     console.debug("Accepting ORY Hydra Login Request because skip is true");
     const {
       data: { redirect_to },
-    } = await hydraOauthApi.acceptOAuth2LoginRequest(hydraChallenge, {
-      subject: data.subject,
+    } = await hydraOauthApi.acceptOAuth2LoginRequest({
+      loginChallenge,
+      acceptOAuth2LoginRequest: {
+        subject: data.subject,
+      },
     });
 
     // All we need to do now is to redirect the user back to hydra!
@@ -52,21 +57,20 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   try {
     // We need to know who the user is for hydra
-    const { data: userInfo } = await kratosSdk.toSession(
-      undefined,
-      request.headers.get("Cookie")!
-    );
+    const { data: userInfo } = await kratosFrontendApi.toSession({
+      cookie: request.headers.get("Cookie")!,
+    });
 
     // User is authenticated, accept the LoginRequest and tell Hydra
     const {
       data: { redirect_to },
-    } = await hydraOauthApi.acceptOAuth2LoginRequest(hydraChallenge, {
+    } = await hydraOauthApi.acceptOAuth2LoginRequest({loginChallenge, acceptOAuth2LoginRequest: {
       // We need to get the email of the user. We don't want to do that via traits as
       // they are dynamic. They would be part of the PublicAPI. That's not true
       // for identity.addresses So let's get it via the AdmninAPI
       subject: userInfo.identity.id,
       context: userInfo,
-    });
+    }});
 
     // All we need to do now is to redirect the user back to hydra!
     return redirect(redirect_to);

@@ -12,7 +12,7 @@ import { Outlet, useLoaderData } from "@remix-run/react";
 import { json, LoaderFunction } from "@remix-run/server-runtime";
 import md5 from "md5";
 import { Link } from "~/components/Link";
-import { kratosSdk } from "~/utils/ory.server";
+import { kratosFrontendApi } from "~/utils/ory.server";
 import { getUserFullName } from "~/utils/user.server";
 
 type LoaderData = { gravatarHash: string | null; userFullName: string };
@@ -22,8 +22,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   let userInfo: Session | null = null;
   if (cookie?.includes("session")) {
-    const { data } = await kratosSdk
-      .toSession(undefined, cookie)
+    const { data } = await kratosFrontendApi
+      .toSession({cookie})
       .catch(() => ({ data: null }));
     userInfo = data;
   }

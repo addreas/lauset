@@ -9,7 +9,7 @@ import {
   Stack,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { SelfServiceLoginFlow } from "@ory/client";
+import { LoginFlow } from "@ory/client";
 import { useLoaderData } from "@remix-run/react";
 import { json, LoaderFunction } from "@remix-run/server-runtime";
 import { Link } from "~/components/Link";
@@ -19,10 +19,10 @@ import { getFlowOrRedirectToInit } from "~/utils/flow";
 import {
   getUrlForKratosFlow,
   kratosBrowserUrl,
-  kratosSdk,
+  kratosFrontendApi,
 } from "~/utils/ory.server";
 
-type LoaderData = SelfServiceLoginFlow & {
+type LoaderData = LoginFlow & {
   partiallyAuthenticated: boolean;
   registerUrl: string;
   logoutUrl: string;
@@ -32,7 +32,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const login = await getFlowOrRedirectToInit(
     request,
     "login",
-    (flow, cookie) => kratosSdk.getSelfServiceLoginFlow(flow, cookie)
+    (id, cookie) => kratosFrontendApi.getLoginFlow({id, cookie})
   );
 
   const return_to = (
@@ -49,8 +49,8 @@ export const loader: LoaderFunction = async ({ request }) => {
     login.refresh || login.requested_aal === "aal2";
 
   const logoutUrl =
-    (await kratosSdk
-      .createSelfServiceLogoutFlowUrlForBrowsers(request.headers.get("Cookie")!)
+    (await kratosFrontendApi
+      .createBrowserLogoutFlow({cookie: request.headers.get("Cookie")!})
       .then((r) => r.data.logout_url)
       .catch(() => "")) ?? "";
 
