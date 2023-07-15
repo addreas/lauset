@@ -46,7 +46,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const context = body.context as Session;
 
   // If a user has granted this application the requested scope, hydra will tell us to not show the UI.
-  if (body.skip) {
+  if (body.skip || body.client?.skip_consent) {
     // You can apply logic here, for example grant another scope, or do whatever...
     // All we need to do now is to redirect the user back to hydra!
     const {
