@@ -1,17 +1,19 @@
-FROM docker.io/node:18-alpine
+FROM denoland/deno:latest AS builder
+ENV DENO_DIR=/deno-dir
+WORKDIR /app
 
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-ENV NODE_ENV production
-
-RUN npm ci
+COPY deno.json deno.lock package.json* ./
+RUN deno ci --prod --skip-types
 
 COPY . .
+RUN deno task build
 
-RUN npm run build
+FROM denoland/deno:latest
+ENV DENO_DIR=/deno-dir
+WORKDIR /app
 
-EXPOSE 3000
+COPY --from=builder /app .
+COPY --from=builder /deno-dir /deno-dir
 
-ENTRYPOINT ["npm", "start"]
+EXPOSE 8000
+CMD ["deno", "serve", "-A", "_fresh/server.js"]

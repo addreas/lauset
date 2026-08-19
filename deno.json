@@ -1,0 +1,50 @@
+{
+  "nodeModulesDir": "manual",
+  "tasks": {
+    "check": "deno fmt --check . && deno lint . && deno check **/*.ts **/*.tsx",
+    "dev": "vite",
+    "build": "vite build",
+    "start": "deno serve -A _fresh/server.js",
+    "update": "deno run -A -r jsr:@fresh/update ."
+  },
+  "lint": {
+    "rules": {
+      "tags": ["fresh", "recommended"]
+    }
+  },
+  "exclude": ["**/_fresh/*", ".pi/", ".zed/", "assets/"],
+  "imports": {
+    "@/": "./",
+    "fresh": "jsr:@fresh/core@^2.3.3",
+    "@fresh/plugin-vite": "jsr:@fresh/plugin-vite@^1.1.2",
+    "@ory/client-fetch": "npm:@ory/client-fetch@^1.22.37",
+    "@ory/client": "npm:@ory/client@^1.22.37",
+    "@ory/elements-preact": "npm:@ory/elements-preact@^0.9.0",
+    "vite": "npm:vite@^7",
+    "preact": "npm:preact@^10.29",
+    "@types/babel__core": "npm:@types/babel__core@^7.20.5",
+    "@types/node": "npm:@types/node@^22.0.0"
+  },
+  "compilerOptions": {
+    "lib": ["dom", "dom.asynciterable", "dom.iterable", "deno.ns"],
+    "jsx": "precompile",
+    "jsxImportSource": "preact",
+    "jsxPrecompileSkipElements": [
+      "a",
+      "img",
+      "source",
+      "body",
+      "html",
+      "head",
+      "title",
+      "meta",
+      "script",
+      "link",
+      "style",
+      "base",
+      "noscript",
+      "template"
+    ],
+    "types": ["vite/client"]
+  }
+}

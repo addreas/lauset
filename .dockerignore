@@ -1,3 +1,9 @@
-node_modules
-npm-debug.log
-
+node_modules/
+vendor/
+_fresh/
+dist/
+build/
+.deno/
+.vite/
+.pi-lens/
+.env

@@ -1,8 +1,6 @@
-version: "3.7"
-
 services:
   kratos-migrate:
-    image: oryd/kratos:v0.10.1
+    image: oryd/kratos:v25.4.0
     environment:
       - DSN=sqlite:///var/lib/sqlite/db.sqlite?_fk=true&mode=rwc
     volumes:
@@ -18,7 +16,7 @@ services:
   kratos:
     depends_on:
       - kratos-migrate
-    image: oryd/kratos:v0.10.1
+    image: oryd/kratos:v25.4.0
     # build:
     #   context: ./kratos
     #   dockerfile: ./.docker/Dockerfile-build
@@ -40,34 +38,39 @@ services:
         source: ./config
         target: /etc/config/kratos
 
+  hydra-sqlite:
+    image: busybox
+    volumes:
+      - hydra-sqlite:/mnt/sqlite
+    command: "chmod -R 0777 /mnt/sqlite"
+
   hydra-migrate:
-    image: oryd/hydra:v2.0.1
+    image: oryd/hydra:v25.4.0
     # build:
     #   context: ./hydra
     #   dockerfile: ./.docker/Dockerfile-build
     environment:
-      - DSN=sqlite:///var/lib/sqlite/db.sqlite?_fk=true&mode=rwc
+      - DSN=sqlite:///mnt/sqlite/db.sqlite?_fk=true&mode=rwc
     volumes:
       - type: volume
         source: hydra-sqlite
-        target: /var/lib/sqlite
+        target: /mnt/sqlite
         read_only: false
       - type: bind
         source: ./config
         target: /etc/config/hydra
-    command: migrate sql -e --yes
+    command: migrate sql up -e --yes
     restart: on-failure
 
   hydra:
     depends_on:
       - hydra-migrate
-    image: oryd/hydra:v2.0.1
+    image: oryd/hydra:v25.4.0
     # build:
     #   context: ./hydra
     #   dockerfile: ./.docker/Dockerfile-build
     environment:
-      - DSN=sqlite:///var/lib/sqlite/db.sqlite?_fk=true&mode=rwc
-      - HYDRA_URL=http://localhost:4445/
+      - DSN=sqlite:///mnt/sqlite/db.sqlite?_fk=true&mode=rwc
       - ORY_SDK_URL=http://localhost:4445/
       # - LOG_LEVEL=debug
     ports:
@@ -76,7 +79,7 @@ services:
     volumes:
       - type: volume
         source: hydra-sqlite
-        target: /var/lib/sqlite
+        target: /mnt/sqlite
         read_only: false
       - type: bind
         source: ./config
@@ -117,8 +120,8 @@ services:
     command: |
       --http-address=0.0.0.0:4180
       --upstream=file:///www/static#/
-      --client-id=0980f1aa-a23e-443c-b121-77a583a19f7d
-      --client-secret=uRckz8W91L0pLtbvddYN8ogCyr
+      --client-id=b447e2e9-54c9-480c-8a05-98c2d098e006
+      --client-secret=zNUNeKcjB.9Sv1t~LbTZFRXXrm
       --cookie-secret=VOT5eQoY4rdUcXFqnyKk_fcBfTbSFZ0Z_WsVbNa4oyw=
       --email-domain=*
       --redirect-url=http://localhost:4180/oauth2/callback

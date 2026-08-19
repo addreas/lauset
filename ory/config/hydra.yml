@@ -8,8 +8,8 @@ urls:
   self:
     issuer: "http://hydra:4444"
     public: "http://localhost:4444"
-  consent: "http://localhost:3000/hydra/consent"
-  login: "http://localhost:3000/hydra/login"
+  consent: "http://localhost:3000/consent"
+  login: "http://localhost:3000/login"
   logout: "http://localhost:3000/logout"
 
 secrets:

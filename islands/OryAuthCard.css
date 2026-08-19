@@ -1,0 +1,28 @@
+div.ory-user-auth-card {
+  margin: 0 auto;
+  max-width: 28rem;
+  min-width: 0;
+  width: 100%;
+  border-radius: 0.5rem;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border: none;
+}
+
+div.ory-user-auth-card button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+}
+
+div.ory-user-auth-card input {
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+}
+
+div.ory-user-auth-card hr {
+  border-top-width: 1px;
+  width: 100%;
+  margin: 1rem 0 !important;
+}

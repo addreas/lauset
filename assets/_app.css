@@ -1,0 +1,16 @@
+.auth-bg {
+	min-height: 100%;
+	background: #4158d0;
+	background-image: linear-gradient(
+		43deg,
+		#4158d0 0%,
+		#c850c0 46%,
+		#ffcc70 100%
+	);
+}
+
+.page {
+	max-width: 768px;
+	margin: 0 auto;
+	padding: 4rem 1rem;
+}

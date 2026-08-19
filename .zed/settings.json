@@ -1,0 +1,4 @@
+{
+  "language_servers": ["deno", "vscode-css-language-server"],
+  "formatter": "language_server",
+}

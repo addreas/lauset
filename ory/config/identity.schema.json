@@ -12,13 +12,24 @@
           "format": "email",
           "title": "E-Mail",
           "minLength": 3,
+          "maxLength": 320,
           "ory.sh/kratos": {
             "credentials": {
               "password": {
                 "identifier": true
               },
+              "webauthn": {
+                "identifier": true
+              },
               "totp": {
                 "account_name": true
+              },
+              "code": {
+                "identifier": true,
+                "via": "email"
+              },
+              "passkey": {
+                "display_name": true
               }
             },
             "verification": {

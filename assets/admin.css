@@ -1,0 +1,118 @@
+/* Admin UI — scoped under .admin so existing pages are unaffected.
+   Reuses .card / .stack / .hstack / .button / .page-header and the
+   design tokens defined in assets/styles.css. */
+
+/* The .card default (centered, max-width 1024px) is meant for auth flows;
+   in admin we want tables to fill their container. */
+.admin .card {
+	max-width: none;
+}
+
+.admin table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--chakra-fontSizes-sm);
+}
+
+.admin table th,
+.admin table td {
+	text-align: left;
+	padding: var(--chakra-space-2) var(--chakra-space-4);
+	border-bottom: 1px solid var(--chakra-colors-chakra-border-color);
+	vertical-align: top;
+}
+
+.admin table th {
+	font-weight: var(--chakra-fontWeights-semibold);
+	color: var(--chakra-colors-gray-600);
+	white-space: nowrap;
+}
+
+.admin h2 {
+	font-size: var(--chakra-fontSizes-xl);
+}
+
+.admin h3 {
+	font-size: var(--chakra-fontSizes-sm);
+	color: var(--chakra-colors-gray-600);
+}
+
+/* compact action button for table rows — override the base .button sizing */
+.admin .button-mini {
+	height: auto;
+	min-width: 0;
+	padding: var(--chakra-space-2) var(--chakra-space-4);
+	font-size: var(--chakra-fontSizes-sm);
+}
+
+.admin-note {
+	font-size: var(--chakra-fontSizes-sm);
+	color: var(--chakra-colors-gray-500);
+}
+
+.admin textarea {
+	width: 100%;
+	font-family: var(--chakra-fonts-mono);
+	font-size: var(--chakra-fontSizes-sm);
+	padding: var(--chakra-space-2);
+	border: 1px solid var(--chakra-colors-chakra-border-color);
+	border-radius: var(--chakra-radii-md);
+	background: var(--chakra-colors-gray-50);
+}
+
+/* buttons inside inline forms align with .recovery islands in the same row */
+.admin .hstack form {
+	display: flex;
+	align-items: center;
+}
+
+/* recovery button + feedback (island) */
+.recovery {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--chakra-space-2);
+}
+
+.recovery-ok {
+	font-size: var(--chakra-fontSizes-sm);
+	color: var(--chakra-colors-green-600);
+}
+
+.recovery-err {
+	font-size: var(--chakra-fontSizes-sm);
+	color: #c53030;
+}
+
+.recovery-reveal code {
+	font-size: var(--chakra-fontSizes-sm);
+	word-break: break-all;
+}
+
+/* destructive action buttons — two-click confirm (see ConfirmButton island).
+   idle: subtle red outline; armed (after first click): solid red fill. */
+.admin .button-danger {
+	color: var(--chakra-colors-red-600);
+	background: transparent;
+	box-shadow: inset 0 0 0 1px var(--chakra-colors-red-300);
+}
+
+.admin .button-danger:hover {
+	opacity: 1;
+	background: var(--chakra-colors-red-50);
+}
+
+.admin .button-danger.confirm-armed {
+	color: #fff;
+	background: var(--chakra-colors-red-600);
+	box-shadow: inset 0 0 0 1px var(--chakra-colors-red-600);
+}
+
+.admin .button-danger.confirm-armed:hover {
+	background: var(--chakra-colors-red-700);
+}
+
+.admin .button-danger:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+	box-shadow: inset 0 0 0 1px var(--chakra-colors-red-300);
+}
