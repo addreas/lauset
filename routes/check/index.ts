@@ -72,4 +72,4 @@ function getIdentityEmail(identity: Identity): string | undefined {
   );
 }
 
-export const handler = checkHandler((ctx) => "/");
+export const handler = checkHandler(() => "/");
