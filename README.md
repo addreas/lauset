@@ -14,9 +14,6 @@ cp .env.example .env   # Kratos / Hydra URLs
 deno task dev          # dev server with HMR
 ```
 
-For production: use the Dockerfile and remember that /admin has zero auth and is
-intended to be protected by a reverse-proxy.
-
 ## Auth checking
 
 Both Envoy `ext_authz` and nginx/haproxy variants can be setup.
