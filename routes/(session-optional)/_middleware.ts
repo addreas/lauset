@@ -7,10 +7,6 @@ const handleCsrfError = define.middleware(async (ctx) => {
     return await ctx.next();
   } catch (err) {
     if (err instanceof HttpError && err.status === 403) {
-      console.debug(
-        "CSRF violation detected — the request origin or Sec-Fetch-Site header was invalid.",
-        { url: ctx.req.url },
-      );
       return new Response(
         "<h1>A security violation was detected, please fill out the form again.</h1>",
         {

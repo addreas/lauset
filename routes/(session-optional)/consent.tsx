@@ -90,7 +90,6 @@ export const handler = define.handlers<{
       .then(async (body) => {
         // If a user has granted this application the requested scope, hydra will tell us to not show the UI.
         if (shouldSkipConsent(body)) {
-          console.debug("Skipping consent request and accepting it.");
           const grantScope = body.requested_scope || [];
           const session = extractSession(ctx, grantScope);
 
@@ -143,7 +142,6 @@ export const handler = define.handlers<{
     // Let's fetch the consent request again to be able to set `grantAccessTokenAudience` properly.
     // Let's see if the user decided to accept or reject the consent request..
     if (consent_action === "accept") {
-      console.debug("Consent request was accepted by the user");
       return oauth2
         .getOAuth2ConsentRequest({ consentChallenge: challenge })
         .then((body) =>
@@ -173,8 +171,6 @@ export const handler = define.handlers<{
             .then((body) => ctx.redirect(body.redirect_to))
         );
     }
-
-    console.debug("Consent request denied by the user");
 
     // Looks like the consent request was denied by the user
     return (

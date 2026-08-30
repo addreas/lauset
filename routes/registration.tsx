@@ -34,10 +34,7 @@ export const handler = define.handlers({
     });
 
     if (isQuerySet(login_challenge)) {
-      console.debug("login_challenge found in URL query: ", { query });
       initFlowQuery.append("login_challenge", login_challenge);
-    } else {
-      console.debug("no login_challenge found in URL query: ", { query });
     }
 
     const initFlowUrl = getUrlForFlow(
@@ -49,9 +46,6 @@ export const handler = define.handlers({
     // The flow is used to identify the settings and registration flow and
     // return data like the csrf_token and so on.
     if (!isQuerySet(flow)) {
-      console.debug("No flow ID found in URL query initializing login flow", {
-        query,
-      });
       return ctx.redirect(initFlowUrl, 303);
     }
 

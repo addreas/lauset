@@ -26,10 +26,6 @@ export const handler = define.handlers({
     // The flow is used to identify the settings and registration flow and
     // return data like the csrf_token and so on.
     if (!isQuerySet(flow)) {
-      console.debug(
-        "No flow ID found in URL query initializing recovery flow",
-        { query },
-      );
       return ctx.redirect(initFlowUrl, 303);
     }
 

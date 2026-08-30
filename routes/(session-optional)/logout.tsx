@@ -10,7 +10,6 @@ export const handler = define.handlers({
     const logoutChallenge = ctx.url.searchParams.get("logout_challenge");
 
     if (typeof logoutChallenge !== "string") {
-      console.debug("Expected a logout challenge to be set but received none.");
       return ctx.redirect("/login", 302);
     }
 
@@ -39,14 +38,12 @@ export const handler = define.handlers({
     const submit = form.get("submit")?.toString();
 
     if (submit === "No") {
-      console.debug("User rejected to log out.");
       // The user rejected to log out, so we'll redirect to /ui/welcome
       return oauth2
         .rejectOAuth2LogoutRequest({ logoutChallenge })
         .then(() => ctx.redirect("login"))
         .catch(() => ctx.redirect("login"));
     } else {
-      console.debug("User agreed to log out.");
       // The user agreed to log out, let's accept the logout request.
       return oauth2
         .acceptOAuth2LogoutRequest({ logoutChallenge })

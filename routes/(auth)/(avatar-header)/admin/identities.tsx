@@ -15,13 +15,11 @@ export const handler = define.handlers({
     const identities = await identity.listIdentities({ pageSize: 250 });
     const rows: IdentityRow[] = await Promise.all(
       identities.map(async (i) => {
-        let sessions: Session[] = [];
-        try {
-          sessions = await identity.listIdentitySessions({ id: i.id });
-        } catch (err) {
-          console.debug(`admin: failed to list sessions for ${i.id}`, err);
-        }
-        return { identity: i, sessions };
+        return {
+          identity: i,
+          sessions: await identity.listIdentitySessions({ id: i.id })
+            .catch(() => []),
+        };
       }),
     );
     return page({ rows, truncated: identities.length >= 250 });
