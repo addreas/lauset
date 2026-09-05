@@ -48,9 +48,6 @@ spec:
                 # - X-User-Id
                 # - X-User-Email
                 # - X-User-Name
-                # - X-Auth-Request-User
-                # - X-Auth-Request-Email
-                # - X-Auth-Request-Preferred-Username
       backendRefs: ...
 ```
 
