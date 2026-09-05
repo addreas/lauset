@@ -1,16 +1,17 @@
 import OryConsentCard from "@/islands/OryConsentCard.tsx";
-import { define, State } from "@/lib/fresh.ts";
-import { Context, page } from "fresh";
+import { define } from "@/lib/fresh.ts";
+import { page } from "fresh";
 import { toOAuth2ConsentRequest } from "@/lib/ory-types.ts";
 import {
   AcceptOAuth2ConsentRequestSession,
   type OAuth2ConsentRequest,
 } from "@ory/client";
-import { oauth2 } from "@/lib/sdk/index.ts";
+import type { Identity } from "@ory/client-fetch";
+import { identity, oauth2 } from "@/lib/sdk/index.ts";
 import { isOAuthConsentRouteEnabled, shouldSkipConsent } from "@/lib/index.ts";
 
 const extractSession = (
-  ctx: Context<State>,
+  identity: Identity | undefined,
   grantScope: string[],
 ): AcceptOAuth2ConsentRequestSession => {
   const session: AcceptOAuth2ConsentRequestSession = {
@@ -18,7 +19,6 @@ const extractSession = (
     id_token: {},
   };
 
-  const identity = ctx.state.session?.identity;
   if (!identity) {
     return session;
   }
@@ -91,7 +91,10 @@ export const handler = define.handlers<{
         // If a user has granted this application the requested scope, hydra will tell us to not show the UI.
         if (shouldSkipConsent(body)) {
           const grantScope = body.requested_scope || [];
-          const session = extractSession(ctx, grantScope);
+          const session = extractSession(
+            await identity.getIdentity({ id: body.subject! }),
+            grantScope,
+          );
 
           // Now it's time to grant the consent request. You could also deny the request if something went terribly wrong
           return await oauth2
@@ -135,16 +138,12 @@ export const handler = define.handlers<{
     const remember = form.get("remember")?.toString();
     const grantScope = form.getAll("grant_scope").map((e) => e.toString());
 
-    // extractSession only gets the sesseion data from the request
-    // You can extract more data from the Ory Identities admin API
-    const session = extractSession(ctx, grantScope);
-
     // Let's fetch the consent request again to be able to set `grantAccessTokenAudience` properly.
     // Let's see if the user decided to accept or reject the consent request..
     if (consent_action === "accept") {
       return oauth2
         .getOAuth2ConsentRequest({ consentChallenge: challenge })
-        .then((body) =>
+        .then(async (body) =>
           oauth2
             .acceptOAuth2ConsentRequest({
               consentChallenge: challenge,
@@ -153,7 +152,10 @@ export const handler = define.handlers<{
                 // are requested accidentally.
                 grant_scope: grantScope,
 
-                session,
+                session: extractSession(
+                  await identity.getIdentity({ id: body.subject! }),
+                  grantScope,
+                ),
 
                 // ORY Hydra checks if requested audiences are allowed by the client, so we can simply echo this.
                 grant_access_token_audience:

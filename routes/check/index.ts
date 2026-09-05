@@ -4,7 +4,7 @@ import { frontend } from "@/lib/sdk/index.ts";
 import { getUserFullName } from "@/lib/user.ts";
 import type { Context } from "fresh";
 import type { Identity, Session } from "@ory/client-fetch";
-import { ResponseError } from "@ory/client-fetch";
+import { isSessionAal2Required, ResponseError } from "@ory/client-fetch";
 import type { State } from "@/lib/fresh.ts";
 
 export function checkHandler(returnPath: (ctx: Context<State>) => string) {
@@ -27,13 +27,18 @@ async function check(
     if (
       err instanceof ResponseError && [401, 403].includes(err.response.status)
     ) {
+      if (err.response.status === 403) {
+        const body = await err.response.clone().json().catch(() => undefined);
+        if (isSessionAal2Required(body)) {
+          return new Response(null, { status: 200 });
+        }
+      }
       const params = new URLSearchParams({
         return_to: ctx.req.headers.has("x-envoy-original-uri")
           ? ctx.req.headers.get("x-envoy-original-uri")!
           : "https://" + ctx.req.headers.get("host") + returnPath +
             ctx.url.search,
       });
-      if (err.response.status === 403) params.set("aal", "aal2");
       return new Response(null, {
         status: 302,
         headers: {

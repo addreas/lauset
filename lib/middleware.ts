@@ -1,6 +1,7 @@
 // Copyright © 2022 Ory Corp
 // SPDX-License-Identifier: Apache-2.0
 import type { Context } from "fresh";
+import { HttpError } from "fresh";
 import { frontend } from "@/lib/sdk/index.ts";
 import { getUrlForFlow, isUUID, kratosBrowserUrl } from "./index.ts";
 import type { ResponseError, Session } from "@ory/client-fetch";
@@ -37,6 +38,23 @@ const maybeInitiate2FA =
     }
     return null;
   };
+
+export const handleCsrfError = define.middleware(async (ctx) => {
+  try {
+    return await ctx.next();
+  } catch (err) {
+    if (err instanceof HttpError && err.status === 403) {
+      return new Response(
+        "<h1>A security violation was detected, please fill out the form again.</h1>",
+        {
+          status: 403,
+          headers: { "Content-Type": "text/html" },
+        },
+      );
+    }
+    throw err;
+  }
+});
 
 /**
  * Adds the session to the request context.
